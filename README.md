@@ -116,10 +116,6 @@ This section contains a full list of the `pulumi/x` cloud-agnostic services:
     - CDN
     - Container Registry
 
-TODO(joe): hand wavy; flesh this out more.
-
-TODO(joe): need to figure out the distinction between { design-time, runtime } X { dev, ops }.
-
 ## Appendix A: Cloud Catalog
 
 Here's an exhaustive list of services offered by "the big three," and an attempt to correlate them.
