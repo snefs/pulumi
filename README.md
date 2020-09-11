@@ -1,7 +1,7 @@
 # pulumi
 In order to create a re-usable Infrastructure as code multi-cloud, we are for once not starting with ARM, but are starting with alternative frameworks. We are now looking into Pulumi and are trying to create a concept using Automapper to support multi cloud IaC. We found that the functionality provided by TerraForm does have the uniform 'syntax' advantage, but  is still limited to solve the problem to understand/know the specific cloud resources/naming conventions. Although Pulumi has the same disadvantage, as it's code, there are a lot of ways to overcome this.
 
-Pulumi Lesson #1: In order to prevent the creation of resources with HEX codes (used for versioning), all code required overriding the Name property with arguments;
+Pulumi Example #1: In order to prevent the creation of resources with HEX codes (used for versioning), all code required overriding the Name property with arguments;
 
         // Create an Azure Resource Group
         var azureGroup = new Pulumi.Azure.Core.ResourceGroup("azureGroup", new ResourceGroupArgs
@@ -20,7 +20,47 @@ Pulumi Lesson #1: In order to prevent the creation of resources with HEX codes (
         });
 
 
-Pulumi Lesson #2: Cross-Cloud targeting resource names
+Pulumi Example #2:
+  
+  Create an Azure Storage account in a resource group, and the similar action in Amazon. Here you can clearly see the potential, and the downsides
+  of multi-cloud rollout....it's very cloud specific!
+ 
+
+        // Create an Azure Resource Group
+        var azureGroup = new Pulumi.Azure.Core.ResourceGroup("azureGroup", new ResourceGroupArgs
+        {
+            Name = "azureIAC"
+        });
+
+        // Create an Azure Storage Account
+        Account account = new Account("storage", new AccountArgs
+        {
+            ResourceGroupName = azureGroup.Name,
+            AccountReplicationType = "LRS",
+            AccountTier = "Standard",
+            Name = "storageinthezone",
+            Location = "westeurope"
+        });
+
+        var awsGroup = new Pulumi.Aws.ResourceGroups.Group("awsGroup", new Pulumi.Aws.ResourceGroups.GroupArgs
+        {
+            Name = "awsIAC",
+            ResourceQuery = new Input<Pulumi.Aws.ResourceGroups.Inputs.GroupResourceQueryArgs>
+            {
+            
+            }
+        });
+       
+        // Create an AWS Storage Account
+        var awsStorage = new Pulumi.Aws.S3.Bucket("storage", new Pulumi.Aws.S3.BucketArgs
+        {
+            Region = "eu-central-1",
+            BucketName = "storageinthezone",
+        });
+
+
+
+Pulumi Overview: Cross-Cloud targeting resource names
 note, taken from: https://github.com/pulumi/pulumi/blob/37c7a955d7b1e42a3db74c41b71a35b59f492d18/docs/design/x-cloud.md
 
 
